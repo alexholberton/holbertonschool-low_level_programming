@@ -1,6 +1,5 @@
-#include <stdlib.h>
-#include <time.h>
 #include <stdio.h>
+
 /**
 	* main - Entry point
 	* Description: Print the alphabet in lowercase, followed by a new line.
@@ -9,14 +8,14 @@
 
 int main(void)
 {
-	int n;
+	char c = 'a';
 
-	srand(time(0));
-	n = rand() - RAND_MAX / 2;
-	for (n = 'a'; n <= 'z'; n++)
-	{
-		putchar(n);
-	}
+	while (c <= 'z')
+{
+	putchar(c);
+	c++;
+}
 	putchar('\n');
+
 	return (0);
 }
