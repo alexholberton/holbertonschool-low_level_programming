@@ -1,14 +1,17 @@
 #include "main.h"
 
 /**
-* _isalpha - Checks for alphabetic character.
-* @c: The character to be checked.
-* Return: 1 if c is a letter, lowercase or uppercase, 0 otherwise.
+* print_last_digit - Prints the last digit of a number.
+* @n : The number to extract the last digit from.
+* Return: The last digit of n.
 */
-int _isalpha(int c)
+int print_last_digit(int n)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	else
-		return (0);
+	int last_digit = n % 10;
+
+	if (last_digit < 0)
+		last_digit *= -1;
+
+	_putchar(last_digit + '0');
+	return (last_digit);
 }
