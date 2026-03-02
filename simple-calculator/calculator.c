@@ -8,6 +8,7 @@
 int main(void)
 {
 	int choice;
+	int a, b;
 
 	do {
 		printf("Simple Calculator\n");
@@ -18,28 +19,33 @@ int main(void)
 		printf("0) Quit\n");
 		printf("Choice: ");
 
-		/* Read user input */
 		if (scanf("%d", &choice) != 1)
 		{
-			/* Clear buffer for non-numeric input to avoid infinite loop */
 			while (getchar() != '\n')
 				;
 			continue;
 		}
 
-		/* Logic for menu choices */
-		if (choice == 0)
+		if (choice == 1)
+		{
+			/* Task 2: Addition Logic */
+			printf("A: ");
+			scanf("%d", &a);
+			printf("B: ");
+			scanf("%d", &b);
+			printf("Result: %d\n", a + b);
+		}
+		else if (choice == 0)
 		{
 			printf("Bye!\n");
 		}
-		else if (choice >= 1 && choice <= 4)
+		else if (choice >= 2 && choice <= 4)
 		{
-			/* Operations will be added in the next tasks */
+			/* Placeholders for next tasks */
 			continue;
 		}
 		else
 		{
-			/* Requirement: print "Invalid choice" for numbers not in menu */
 			printf("Invalid choice\n");
 		}
 
