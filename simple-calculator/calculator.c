@@ -1,27 +1,23 @@
 #include <stdio.h>
 
 /**
- * main - Entry point of the calculator program
- *
- * Return: Always 0 (Success)
- */
+* main - Simple calculator program
+* Return: Always 0 (Success)
+*/
 int main(void)
 {
 	int choice;
 
 	int a, b, result;
 
-	printf("Choice: ");
-	scanf("%d", &choice);
-
-	if (choice == 2)
+	if (choice == 3)
 	{
 		printf("A: ");
-		scanf("%d", &a);
+		if (scanf("%d", &a) != 1) return (1);
 		printf("B: ");
-		scanf("%d", &b);
+		if (scanf("%d", &b) != 1) return (1);
 
-		result = a - b;
+		result = a * b;
 
 		printf("Result: %d\n", result);
 	}
