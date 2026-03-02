@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 /**
- * main - entry point for the simple calculator program
+ * main - entry point for the simple calculator
  *
  * Return: Always 0 (Success)
  */
@@ -10,7 +10,6 @@ int main(void)
 	int choice;
 
 	do {
-		/* Display the menu */
 		printf("Simple Calculator\n");
 		printf("1) Add\n");
 		printf("2) Subtract\n");
@@ -19,29 +18,29 @@ int main(void)
 		printf("0) Quit\n");
 		printf("Choice: ");
 
-		/* Get user input */
+		/* Read user input */
 		if (scanf("%d", &choice) != 1)
 		{
-			/* Clear the buffer if user enters a non-numeric value */
+			/* Clear buffer for non-numeric input to avoid infinite loop */
 			while (getchar() != '\n')
 				;
-			printf("Invalid input. Please enter a number.\n");
 			continue;
 		}
 
-		/* Process user choice */
+		/* Logic for menu choices */
 		if (choice == 0)
 		{
 			printf("Bye!\n");
 		}
 		else if (choice >= 1 && choice <= 4)
 		{
-			/* Logic for operations will be added in future tasks */
-			printf("Operation %d selected\n", choice);
+			/* Operations will be added in the next tasks */
+			continue;
 		}
 		else
 		{
-			printf("Invalid choice, try again.\n");
+			/* Requirement: print "Invalid choice" for numbers not in menu */
+			printf("Invalid choice\n");
 		}
 
 	} while (choice != 0);
