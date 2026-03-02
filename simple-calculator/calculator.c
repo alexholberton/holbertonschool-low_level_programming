@@ -1,26 +1,51 @@
 #include <stdio.h>
 
 /**
-* main - Simple calculator program
-* Return: Always 0 (Success)
-*/
+ * main - entry point for the simple calculator
+ *
+ * Return: Always 0 (Success)
+ */
 int main(void)
 {
-	int choice;
+	int choice = -1; /* Initialized to avoid 'uninitialized' error */
+	int a, b;
 
-	int a, b, result;
+	do {
+		printf("Simple Calculator\n");
+		printf("1) Add\n");
+		printf("2) Subtract\n");
+		printf("3) Multiply\n");
+		printf("4) Divide\n");
+		printf("0) Quit\n");
+		printf("Choice: ");
 
-	if (choice == 3)
-	{
-		printf("A: ");
-		if (scanf("%d", &a) != 1) return (1);
-		printf("B: ");
-		if (scanf("%d", &b) != 1) return (1);
+		/* Capture input BEFORE checking conditions */
+		if (scanf("%d", &choice) != 1)
+		{
+			/* Clear input buffer if user types a letter */
+			while (getchar() != '\n')
+				;
+			continue;
+		}
 
-		result = a * b;
+		if (choice == 1)
+		{
+			printf("A: ");
+			scanf("%d", &a);
+			printf("B: ");
+			scanf("%d", &b);
+			printf("Result: %d\n", a + b);
+		}
+		else if (choice == 0)
+		{
+			printf("Bye!\n");
+		}
+		else if (choice < 0 || choice > 4)
+		{
+			printf("Invalid choice\n");
+		}
 
-		printf("Result: %d\n", result);
-	}
+	} while (choice != 0);
 
 	return (0);
 }
