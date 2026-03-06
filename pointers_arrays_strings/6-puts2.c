@@ -1,29 +1,32 @@
 #include "main.h"
 
 /**
-* _puts2 - prints every other character of a string
-* @str: pointer to the string to print
-*
-* Return: void
-*/
-void _puts2(char *str)
+ * puts2 - prints every other character of a string,
+ * starting with the first character, followed by a new line.
+ * @str: The string to be treated.
+ *
+ * Return: void.
+ */
+void puts2(char *str)
 {
 	int i = 0;
 
-	/* On vérifie que la chaîne n'est pas vide dès le début */
+	/* On parcourt la chaîne caractère par caractère */
 	while (str[i] != '\0')
 	{
+		/* On affiche le caractère actuel */
 		_putchar(str[i]);
 
-		/* On saute un caractère. Si on arrive au bout, on s'arrête. */
-		if (str[i + 1] == '\0')
+		/* On avance de 1 */
+		i++;
+
+		/* Si on n'est pas à la fin, on saute le caractère suivant */
+		if (str[i] != '\0')
 		{
 			i++;
 		}
-		else
-		{
-			i += 2;
-		}
+		/* Si on était déjà à la fin (\0), la boucle s'arrêtera */
+		/* au prochain test */
 	}
 	_putchar('\n');
 }
