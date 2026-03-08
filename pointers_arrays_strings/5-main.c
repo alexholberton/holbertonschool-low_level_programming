@@ -8,12 +8,13 @@
 */
 int main(void)
 {
-	char str[] = "Look up!\n";
+	char *s = "hello, world";
 
-	char *ptr;
+	char *f = "world";
 
-	ptr = string_toupper(str);
-	printf("%s", ptr);
-	printf("%s", str);
+	char *t;
+
+	t = _strstr(s, f);
+	printf("%s\n", t);
 	return (0);
 }
