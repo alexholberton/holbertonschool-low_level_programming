@@ -1,4 +1,3 @@
-Voici la traduction française de ton rapport, structurée et prête pour ton fichier `.md`.
 # Green Efficiency Analysis Report
 
 ## Measurement Methodology
