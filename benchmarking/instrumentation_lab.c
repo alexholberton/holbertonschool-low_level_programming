@@ -8,88 +8,85 @@ static int dataset[DATASET_SIZE];
 
 static unsigned int next_value(unsigned int *state)
 {
-    *state = (*state * 1103515245u) + 12345u;
-    return *state;
+	*state = (*state * 1103515245u) + 12345u;
+	return (*state);
 }
 
 static void build_dataset(void)
 {
-    unsigned int state;
-    int i;
+	unsigned int state;
+	int i;
 
-    state = SEED_VALUE;
-
-    for (i = 0; i < DATASET_SIZE; i++)
-        dataset[i] = (int)(next_value(&state) % 100000);
+	state = SEED_VALUE;
+	for (i = 0; i < DATASET_SIZE; i++)
+		dataset[i] = (int)(next_value(&state) % 100000);
 }
 
 static void process_dataset(void)
 {
-    int i;
-    int v;
+	int i;
+	int v;
 
-    for (i = 0; i < DATASET_SIZE; i++)
-    {
-        v = dataset[i];
-        v = (v * 3) + (v / 7) - (v % 11);
-        if (v < 0)
-            v = -v;
-        dataset[i] = v;
-    }
+	for (i = 0; i < DATASET_SIZE; i++)
+	{
+		v = dataset[i];
+		v = (v * 3) + (v / 7) - (v % 11);
+		if (v < 0)
+			v = -v;
+		dataset[i] = v;
+	}
 }
 
 static unsigned long reduce_checksum(void)
 {
-    unsigned long sum;
-    int i;
+	unsigned long sum;
+	int i;
 
-    sum = 0;
-    for (i = 0; i < DATASET_SIZE; i++)
-        sum = (sum * 131ul) + (unsigned long)dataset[i];
+	sum = 0;
+	for (i = 0; i < DATASET_SIZE; i++)
+		sum = (sum * 131ul) + (unsigned long)dataset[i];
 
-    return sum;
+	return (sum);
 }
 
 int main(void)
 {
-    unsigned long checksum;
-	clock_t start, end total, start step, end step;
-    double d_total, d_build, d_process, d_reduce;
+	unsigned long checksum;
+	/* Déclaration des variables de temps */
+	clock_t t_start, t_end;
+	clock_t b_start, b_end;
+	clock_t p_start, p_end;
+	clock_t r_start, r_end;
 
-    /* Start global timer */
-    start_total = clock();
+	/* Mesure globale début */
+	t_start = clock();
 
-    /* Phase 1: BUILD_DATA instrumentation */
-    start_step = clock();
-    build_dataset();
-    end_step = clock();
-    d_build = (double)(end_step - start_step) / CLOCKS_PER_SEC;
+	/* Phase BUILD_DATA */
+	b_start = clock();
+	build_dataset();
+	b_end = clock();
 
-    /* Phase 2: PROCESS instrumentation */
-    start_step = clock();
-    process_dataset();
-    end_step = clock();
-    d_process = (double)(end_step - start_step) / CLOCKS_PER_SEC;
+	/* Phase PROCESS */
+	p_start = clock();
+	process_dataset();
+	p_end = clock();
 
-    /* Phase 3: REDUCE (Checksum) instrumentation */
-    start_step = clock();
-    checksum = reduce_checksum();
-    end_step = clock();
-    d_reduce = (double)(end_step - start_step) / CLOCKS_PER_SEC;
+	/* Phase REDUCE */
+	r_start = clock();
+	checksum = reduce_checksum();
+	r_end = clock();
 
-    /* Stop global timer */
-    end_total = clock();
-    d_total = (double)(end_total - start_total) / CLOCKS_PER_SEC;
+	/* Mesure globale fin */
+	t_end = clock();
 
-    /* Security check to prevent compiler optimization on unused variables */
-    if (checksum == 0ul)
-        printf("impossible\n");
+	if (checksum == 0ul)
+		printf("impossible\n");
 
-    /* Final Output (Required format) */
-    printf("TOTAL seconds: %.6f\n", d_total);
-    printf("BUILD_DATA seconds: %.6f\n", d_build);
-    printf("PROCESS seconds: %.6f\n", d_process);
-    printf("REDUCE seconds: %.6f\n", d_reduce);
+	/* Affichage respectant strictement le contrat (Output Contract) */
+	printf("TOTAL seconds: %.6f\n", (double)(t_end - t_start) / CLOCKS_PER_SEC);
+	printf("BUILD_DATA seconds: %.6f\n", (double)(b_end - b_start) / CLOCKS_PER_SEC);
+	printf("PROCESS seconds: %.6f\n", (double)(p_end - p_start) / CLOCKS_PER_SEC);
+	printf("REDUCE seconds: %.6f\n", (double)(r_end - r_start) / CLOCKS_PER_SEC);
 
-    return (0);
+	return (0);
 }
