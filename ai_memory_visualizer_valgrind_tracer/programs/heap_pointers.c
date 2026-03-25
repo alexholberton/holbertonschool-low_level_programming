@@ -14,6 +14,13 @@ int main(void)
 	free(a);
 	a = NULL;
 
+	/* Bug 1: use-after-free via dangling pointer b */
+	printf("b after free = %d\n", *b);
+
+	/* Bug 2: memory leak - allocate without freeing */
+	int *c = malloc(sizeof(int) * 10);
+	c[0] = 1;
+
 	return 0;
 }
 
