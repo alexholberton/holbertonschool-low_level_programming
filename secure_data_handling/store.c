@@ -1,4 +1,6 @@
 #include "secure_data.h"
+#include <string.h>
+#include <stdlib.h>
 
 /**
  * add_session_to_store - Adds session and handles duplicates safely
