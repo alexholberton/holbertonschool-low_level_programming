@@ -4,35 +4,36 @@
 
 /**
  * create_session - Creates a new session safely
- * @name: Name of the session
- * Return: Pointer to session or NULL
+ * @name: Name of the session to create
+ *
+ * Return: Pointer to the new session, or NULL if failure
  */
 session_t *create_session(const char *name)
 {
-	session_t *new;
+	session_t *new_node;
 
 	if (!name)
 		return (NULL);
 
-	new = malloc(sizeof(session_t));
-	if (!new)
+	new_node = malloc(sizeof(session_t));
+	if (!new_node)
 		return (NULL);
 
-	new->name = strdup(name);
-	if (!new->name)
+	new_node->name = strdup(name);
+	if (!new_node->name)
 	{
-		free(new);
+		free(new_node);
 		return (NULL);
 	}
 
-	new->id = 0;
-	new->next = NULL;
-	return (new);
+	new_node->id = 0;
+	new_node->next = NULL;
+	return (new_node);
 }
 
 /**
- * free_session - Frees all memory associated with a session
- * @session: Session to free
+ * free_session - Frees a session and its allocated name
+ * @session: Pointer to the session to free
  */
 void free_session(session_t *session)
 {

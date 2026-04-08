@@ -1,11 +1,12 @@
 #include "secure_data.h"
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * add_session_to_store - Adds session and handles duplicates safely
- * @store: Pointer to head
- * @new_session: Session to add
+ * @store: Double pointer to the head of the store
+ * @new_session: Pointer to the session to add
+ *
  * Return: 1 on success, 0 on failure
  */
 int add_session_to_store(session_t **store, session_t *new_session)
@@ -15,14 +16,12 @@ int add_session_to_store(session_t **store, session_t *new_session)
 	if (!store || !new_session)
 		return (0);
 
-	/* Regardons si le nom existe déjà (Failure-Path Safety) */
 	check = *store;
 	while (check)
 	{
 		if (check->name && new_session->name &&
 		    strcmp(check->name, new_session->name) == 0)
 		{
-			/* Doublon détecté : on libère pour éviter la fuite mémoire */
 			free_session(new_session);
 			return (0);
 		}
@@ -35,7 +34,11 @@ int add_session_to_store(session_t **store, session_t *new_session)
 }
 
 /**
- * find_session_by_name - Search function
+ * find_session_by_name - Search for a session by its name
+ * @store: Pointer to the head of the store
+ * @name: Name of the session to find
+ *
+ * Return: Pointer to the session found, or NULL if not found
  */
 session_t *find_session_by_name(session_t *store, const char *name)
 {
@@ -51,7 +54,8 @@ session_t *find_session_by_name(session_t *store, const char *name)
 }
 
 /**
- * clear_store - Full cleanup for Valgrind compliance
+ * clear_store - Frees all sessions in the store and sets head to NULL
+ * @store: Double pointer to the head of the store
  */
 void clear_store(session_t **store)
 {
