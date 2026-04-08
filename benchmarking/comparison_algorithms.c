@@ -1,4 +1,4 @@
-#include <stdio.h>
+    #include <stdio.h>
 #include <time.h>
 
 #define ARRAY_SIZE 50000
