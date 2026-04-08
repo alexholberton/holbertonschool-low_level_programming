@@ -6,10 +6,10 @@
 #include <stdio.h>
 
 /**
- * struct session_s - Session structure
- * @name: Allocated string for session name
- * @id: Session identifier
- * @next: Pointer to the next session
+ * struct session_s - Session data structure
+ * @name: Dynamically allocated string
+ * @id: Session integer ID
+ * @next: Pointer to the next node
  */
 typedef struct session_s
 {
@@ -18,7 +18,6 @@ typedef struct session_s
 	struct session_s *next;
 } session_t;
 
-/* Prototypes */
 session_t *create_session(const char *name);
 void free_session(session_t *session);
 int add_session_to_store(session_t **store, session_t *new_session);

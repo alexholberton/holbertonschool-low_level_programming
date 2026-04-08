@@ -1,12 +1,10 @@
 #include "secure_data.h"
-#include <stdlib.h>
-#include <string.h>
 
 /**
- * create_session - Creates a new session safely
- * @name: Name of the session to create
+ * create_session - Allocates and initializes a new session
+ * @name: Name of the session to be duplicated
  *
- * Return: Pointer to the new session, or NULL if failure
+ * Return: Pointer to the new session, or NULL if allocation fails
  */
 session_t *create_session(const char *name)
 {
@@ -32,14 +30,16 @@ session_t *create_session(const char *name)
 }
 
 /**
- * free_session - Frees a session and its allocated name
- * @session: Pointer to the session to free
+ * free_session - Safely frees a session and its internal data
+ * @session: Pointer to the session to be freed
  */
 void free_session(session_t *session)
 {
 	if (!session)
 		return;
+
 	if (session->name)
 		free(session->name);
+
 	free(session);
 }
