@@ -1,73 +1,129 @@
-#include "secure_data.h"
+#include <stdlib.h>
+#include <string.h>
+#include "store.h"
 
-/**
- * add_session_to_store - Adds session and handles duplicates safely
- * @store: Double pointer to the head of the session list
- * @new_session: Pointer to the new session to be added
- *
- * Return: 1 on success, 0 on failure or if duplicate exists
- */
-int add_session_to_store(session_t **store, session_t *new_session)
+void store_init(store_t *st)
 {
-	session_t *check;
+	if (st)
+		st->head = NULL;
+}
 
-	if (!store || !new_session)
-		return (0);
+static node_t *node_create(session_t *s)
+{
+	node_t *n = (node_t *)malloc(sizeof(*n));
+	if (!n)
+		return NULL;
+	n->sess = s;
+	n->next = NULL;
+	return n;
+}
 
-	check = *store;
-	while (check)
-	{
-		if (check->name && new_session->name &&
-		    strcmp(check->name, new_session->name) == 0)
-		{
-			free_session(new_session);
-			return (0);
+int store_add(store_t *st, session_t *s)
+{
+	node_t *n, *cur;
+
+	if (!st || !s || !s->id) {
+		session_destroy(s);
+		return 0;
+	}
+
+	cur = st->head;
+	while (cur) {
+		if (cur->sess && cur->sess->id &&
+			strcmp(cur->sess->id, s->id) == 0) {
+			session_destroy(s);
+			return 0;
 		}
-		check = check->next;
+		cur = cur->next;
 	}
 
-	new_session->next = *store;
-	*store = new_session;
-	return (1);
-}
+	n = node_create(s);
+	if (!n) {
 
-/**
- * find_session_by_name - Search for a session in the store by name
- * @store: Pointer to the head of the session list
- * @name: String representing the name to search for
- *
- * Return: Pointer to the found session, or NULL if not found
- */
-session_t *find_session_by_name(session_t *store, const char *name)
-{
-	if (!name)
-		return (NULL);
-
-	while (store)
-	{
-		if (store->name && strcmp(store->name, name) == 0)
-			return (store);
-		store = store->next;
+		session_destroy(s);
+		return 0;
 	}
-	return (NULL);
+
+	n->next = st->head;
+	st->head = n;
+
+	return 1;
 }
 
-/**
- * clear_store - Frees all sessions in the store and resets head to NULL
- * @store: Double pointer to the head of the session list
- */
-void clear_store(session_t **store)
+session_t *store_get(store_t *st, const char *id)
 {
-	session_t *tmp;
+	node_t *cur;
 
-	if (!store || !*store)
+	if (!st || !id)
+		return NULL;
+
+	cur = st->head;
+	while (cur) {
+		if (cur->sess && cur->sess->id && strcmp(cur->sess->id, id) == 0)
+			return cur->sess;
+		cur = cur->next;
+	}
+	return NULL;
+}
+
+int store_delete(store_t *st, const char *id, session_t **out)
+{
+	node_t *cur, *prev;
+
+	if (!st || !id)
+		return 0;
+
+	prev = NULL;
+	cur = st->head;
+
+	while (cur) {
+		if (cur->sess && cur->sess->id &&
+			strcmp(cur->sess->id, id) == 0) {
+
+			if (prev)
+				prev->next = cur->next;
+			else
+				st->head = cur->next;
+
+			if (out) {
+				*out = cur->sess; 
+			} else {
+				session_destroy(cur->sess); 
+			}
+
+			free(cur);
+			return 1;
+		}
+
+		prev = cur;
+		cur = cur->next;
+	}
+
+	return 0;
+}
+
+void store_destroy(store_t *st)
+{
+	node_t *cur, *next;
+
+	if (!st)
 		return;
 
-	while (*store)
-	{
-		tmp = (*store)->next;
-		free_session(*store);
-		*store = tmp;
+	cur = st->head;
+
+	while (cur) {
+		next = cur->next;
+
+		if (cur->sess) {
+			session_destroy(cur->sess);
+			cur->sess = NULL;
+		}
+
+		cur->next = NULL;
+
+		free(cur);
+		cur = next;
 	}
-	*store = NULL;
+
+	st->head = NULL;
 }
