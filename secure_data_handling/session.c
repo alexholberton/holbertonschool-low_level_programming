@@ -1,45 +1,78 @@
-#include "secure_data.h"
+#include <stdlib.h>
+#include <string.h>
+#include "session.h"
 
-/**
- * create_session - Allocates and initializes a new session
- * @name: Name of the session to be duplicated
- *
- * Return: Pointer to the new session, or NULL if allocation fails
- */
-session_t *create_session(const char *name)
+session_t *session_create(const char *id, unsigned int uid, const unsigned char *data, size_t data_len)
 {
-	session_t *new_node;
+	session_t *s;
 
-	if (!name)
-		return (NULL);
+	if (!id)
+		return NULL;
 
-	new_node = malloc(sizeof(session_t));
-	if (!new_node)
-		return (NULL);
+	s = (session_t *)malloc(sizeof(*s));
+	if (!s)
+		return NULL;
 
-	new_node->name = strdup(name);
-	if (!new_node->name)
-	{
-		free(new_node);
-		return (NULL);
+	s->id = strdup(id);
+	if (!s->id) {
+		free(s);
+		return NULL;
 	}
 
-	new_node->id = 0;
-	new_node->next = NULL;
-	return (new_node);
+	s->uid = uid;
+
+	if (data_len > 0) {
+		s->data = (unsigned char *)malloc(data_len);
+		if (!s->data) {
+			free(s->id);
+			free(s);
+			return NULL;
+		}
+		memcpy(s->data, data, data_len);
+		s->data_len = data_len;
+	} else {
+		s->data = NULL;
+		s->data_len = 0;
+	}
+
+	return s;
 }
 
-/**
- * free_session - Safely frees a session and its internal data
- * @session: Pointer to the session to be freed
- */
-void free_session(session_t *session)
+int session_set_data(session_t *s, const unsigned char *data, size_t data_len)
 {
-	if (!session)
+	unsigned char *tmp;
+
+	if (!s)
+		return 0;
+
+	if (data_len == 0) {
+		free(s->data);
+		s->data = NULL;
+		s->data_len = 0;
+		return 1;
+	}
+
+	tmp = (unsigned char *)realloc(s->data, data_len);
+	if (!tmp) 
+	{
+
+		return 0;
+	}
+
+	s->data = tmp;
+
+	memcpy(s->data, data, data_len);
+	s->data_len = data_len;
+
+	return 1;
+}
+
+void session_destroy(session_t *s)
+{
+	if (!s)
 		return;
 
-	if (session->name)
-		free(session->name);
-
-	free(session);
+	free(s->id);
+	free(s->data);
+	free(s);
 }
