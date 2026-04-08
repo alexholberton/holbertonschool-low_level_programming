@@ -6,10 +6,10 @@
 #include <stdio.h>
 
 /**
- * struct session_s - Structure pour une session individuelle
- * @name: Nom de la session (alloué dynamiquement)
- * @id: Identifiant unique de la session
- * @next: Pointeur vers la session suivante (liste chaînée)
+ * struct session_s - Session structure
+ * @name: Allocated string for session name
+ * @id: Session identifier
+ * @next: Pointer to the next session
  */
 typedef struct session_s
 {
@@ -18,13 +18,9 @@ typedef struct session_s
 	struct session_s *next;
 } session_t;
 
-/* --- Prototypes pour session.c --- */
-
+/* Prototypes */
 session_t *create_session(const char *name);
 void free_session(session_t *session);
-
-/* --- Prototypes pour store.c --- */
-
 int add_session_to_store(session_t **store, session_t *new_session);
 session_t *find_session_by_name(session_t *store, const char *name);
 void clear_store(session_t **store);
