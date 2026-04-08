@@ -1,4 +1,6 @@
 #include "secure_data.h"
+#include <stdlib.h>
+#include <string.h>
 
 /**
  * create_session - Creates a new session safely
