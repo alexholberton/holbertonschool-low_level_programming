@@ -1,72 +1,68 @@
 #include "secure_data.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /**
- * add_session_to_store - Ajoute une session au stockage global
- * @store: Pointeur vers la tête de la liste de stockage
- * @new_session: La session à ajouter
- *
- * Return: 1 en cas de succès, 0 en cas d'échec
+ * add_session_to_store - Adds session and handles duplicates safely
+ * @store: Pointer to head
+ * @new_session: Session to add
+ * Return: 1 on success, 0 on failure
  */
 int add_session_to_store(session_t **store, session_t *new_session)
 {
-	if (store == NULL || new_session == NULL)
+	session_t *check;
+
+	if (!store || !new_session)
 		return (0);
 
-	/* Insertion en tête de liste (rapide et sécurisé) */
+	/* Regardons si le nom existe déjà (Failure-Path Safety) */
+	check = *store;
+	while (check)
+	{
+		if (check->name && new_session->name &&
+		    strcmp(check->name, new_session->name) == 0)
+		{
+			/* Doublon détecté : on libère pour éviter la fuite mémoire */
+			free_session(new_session);
+			return (0);
+		}
+		check = check->next;
+	}
+
 	new_session->next = *store;
 	*store = new_session;
-
 	return (1);
 }
 
 /**
- * clear_store - Supprime et libère TOUTES les sessions du store
- * @store: Double pointeur vers la tête de liste
- *
- * Return: void
- */
-void clear_store(session_t **store)
-{
-	session_t *current;
-	session_t *next_node;
-
-	if (store == NULL || *store == NULL)
-		return;
-
-	current = *store;
-
-	while (current != NULL)
-	{
-		next_node = current->next;
-		/* On utilise la fonction de libération sécurisée de session.c */
-		free_session(current);
-		current = next_node;
-	}
-
-	/* Crucial : on remet la tête de liste à NULL pour éviter les pointeurs fous */
-	*store = NULL;
-}
-
-/**
- * find_session_by_name - Cherche une session sans risquer de crash
- * @store: La tête de liste
- * @name: Le nom recherché
- *
- * Return: Pointeur vers la session ou NULL
+ * find_session_by_name - Search function
  */
 session_t *find_session_by_name(session_t *store, const char *name)
 {
-	if (name == NULL)
+	if (!name)
 		return (NULL);
-
-	while (store != NULL)
+	while (store)
 	{
-		if (store->name != NULL && strcmp(store->name, name) == 0)
+		if (store->name && strcmp(store->name, name) == 0)
 			return (store);
 		store = store->next;
 	}
-
 	return (NULL);
+}
+
+/**
+ * clear_store - Full cleanup for Valgrind compliance
+ */
+void clear_store(session_t **store)
+{
+	session_t *tmp;
+
+	if (!store || !*store)
+		return;
+
+	while (*store)
+	{
+		tmp = (*store)->next;
+		free_session(*store);
+		*store = tmp;
+	}
+	*store = NULL;
 }
