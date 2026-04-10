@@ -1,4 +1,8 @@
 #include "main.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /**
  * create_file - Crée un fichier et y écrit du texte.
