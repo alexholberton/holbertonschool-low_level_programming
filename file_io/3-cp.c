@@ -5,15 +5,28 @@
 #include <unistd.h>
 
 /**
+ * close_fd - Ferme un descripteur de fichier et gère l'erreur.
+ * @fd: Le descripteur de fichier à fermer.
+ */
+void close_fd(int fd)
+{
+	if (close(fd) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
+	}
+}
+
+/**
  * main - Copie le contenu d'un fichier vers un autre.
  * @ac: Nombre d'arguments.
  * @av: Tableau des arguments.
  *
- * Return: 0 en cas de succès, ou quitte avec un code d'erreur.
+ * Return: 0 en cas de succès.
  */
 int main(int ac, char **av)
 {
-	int fd_from, fd_to, c_status;
+	int fd_from, fd_to;
 	ssize_t n_read, n_written;
 	char buffer[1024];
 
@@ -32,7 +45,7 @@ int main(int ac, char **av)
 	if (fd_to == -1)
 	{
 		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
-		close(fd_from);
+		close_fd(fd_from);
 		exit(99);
 	}
 	while ((n_read = read(fd_from, buffer, 1024)) > 0)
@@ -49,17 +62,7 @@ int main(int ac, char **av)
 		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
 		exit(98);
 	}
-	c_status = close(fd_from);
-	if (c_status == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
-		exit(100);
-	}
-	c_status = close(fd_to);
-	if (c_status == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
-		exit(100);
-	}
+	close_fd(fd_from);
+	close_fd(fd_to);
 	return (0);
 }
